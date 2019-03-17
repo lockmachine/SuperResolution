@@ -63,6 +63,43 @@ class SRCNN:
         self.layers['Conv3'] = Convolution(self.parmas['W3'], self.params['b3'])
         
         self.loss = None
+        self.y = None
+        self.t = None
         
+        
+    # 推論(順伝播)
+    def predict(self, x):
+        # 入力 x に対して各層で推論した結果で x を更新していく
+        for layer in self.layers.values():
+            x = layer.forward(x)
+            
+        # 最終的に推論した結果を返却
+        return x
+        
+    # 損失演算
+    def loss(self, x, t):
+        # 入力 x に対する推論結果 y から損失演算を行う
+        y = self.predict(x)
+        
+        # 最終出力結果と正解データの最小二乗誤差を算出
+        # 逆伝播時の最初の入力値となる
+        return mean_squared_error(y, t)
+        
+    # 勾配計算
+    def gradient(self, x, t):
+        # 順伝播
+        loss = self.loss()
+        
+        # 逆伝播
+        # 最後の層の逆伝播から実行するため層の順番を反転させる
+        layers = list(self.layers.values())
+        layers.reverse()
+        dout = 1
+        for layer in layers.values():
+            layer.backward(dout)
+        
+        
+        
+        return grads
 
 #im = cv2.imread('Train/t1.bmp', cv2.IMREAD_GRAYSCALE)

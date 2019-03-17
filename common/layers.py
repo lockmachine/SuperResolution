@@ -99,9 +99,15 @@ class OutputWithLoss:
         self.t = None # 教師データ
 
     def forward(self, x, t):
-        self.t = t
-        self.y = softmax(x)
-        self.loss = cross_entropy_error(self.y, self.t)
+        # 入力 x に対する推論結果 y から損失演算を行う
+        y = self.predict(x)
+        
+        # 最終出力結果と正解データの最小二乗誤差を算出
+        # 逆伝播時の最初の入力値となる
+        return mean_squared_error(y, t)
+        #self.t = t
+        #self.y = softmax(x)
+        #self.loss = cross_entropy_error(self.y, self.t)
         
         return self.loss
 
