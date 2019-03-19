@@ -10,16 +10,6 @@ from common.util import im2col, col2im
 from common.optimizer import *
 from common.layers import *
 
-im = cv2.imread('Train/t1.bmp') # BGR形式
-cv2.imshow('t1.bmp',im[:,:,0])  # B
-cv2.waitKey(0)
-cv2.imshow('t1.bmp',im[:,:,1])  # G
-cv2.waitKey(0)
-cv2.imshow('t1.bmp',im[:,:,2])  # R
-print(im.shape) # ex) 176 x 197 x 3
-cv2.waitKey(0)
-cv2.destroyAllWindows()
-
 class SRCNN:
     """
     input_dim:入力画像サイズ（channel, height, width）= (3, 33, 33)
@@ -94,12 +84,29 @@ class SRCNN:
         # 最後の層の逆伝播から実行するため層の順番を反転させる
         layers = list(self.layers.values())
         layers.reverse()
-        dout = 1
+        dout = x - t
         for layer in layers.values():
-            layer.backward(dout)
+            dout = layer.backward(dout)
         
-        
+        grads = {}
+        grads['W1'] = self.layers['Conv1'].dW
+        grads['b1'] = self.layers['Conv1'].db
+        grads['W2'] = self.layers['Conv2'].dW
+        grads['b2'] = self.layers['Conv2'].db
+        grads['W3'] = self.layers['Conv3'].dW
+        grads['b3'] = self.layers['Conv3'].db
         
         return grads
 
-#im = cv2.imread('Train/t1.bmp', cv2.IMREAD_GRAYSCALE)
+if __name__ == '__main__':
+    im = cv2.imread('Train/t1.bmp') # BGR形式
+    cv2.imshow('t1.bmp',im[:,:,0])  # B
+    cv2.waitKey(0)
+    cv2.imshow('t1.bmp',im[:,:,1])  # G
+    cv2.waitKey(0)
+    cv2.imshow('t1.bmp',im[:,:,2])  # R
+    print(im.shape) # ex) 176 x 197 x 3
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+    
+    #im = cv2.imread('Train/t1.bmp', cv2.IMREAD_GRAYSCALE)
