@@ -42,17 +42,17 @@ class SRCNN:
                                                             , conv2_param['filter_num'] # 32
                                                             , conv3_param['filter_size']
                                                             , conv3_param['filter_size'])
-        self.params['b2'] = np.zeros(input_dim[0])
+        self.params['b3'] = np.zeros(input_dim[0])
         
         # 各層の生成
         self.layers = OrderedDict()
-        self.layers['Conv1'] = Convolution(self.parmas['W1'], self.params['b1'])
+        self.layers['Conv1'] = Convolution(self.params['W1'], self.params['b1'])
         self.layers['Relu1'] = Relu()
-        self.layers['Conv2'] = Convolution(self.parmas['W2'], self.params['b2'])
+        self.layers['Conv2'] = Convolution(self.params['W2'], self.params['b2'])
         self.layers['Relu2'] = Relu()
-        self.layers['Conv3'] = Convolution(self.parmas['W3'], self.params['b3'])
+        self.layers['Conv3'] = Convolution(self.params['W3'], self.params['b3'])
         
-        self.loss = None
+        self.loss_value = None
         self.y = None
         self.t = None
         
@@ -70,22 +70,28 @@ class SRCNN:
     def loss(self, x, t):
         # 入力 x に対する推論結果 y から損失演算を行う
         y = self.predict(x)
-        
+        print(y.shape)
+        print(t.shape)
         # 最終出力結果と正解データの最小二乗誤差を算出
         # 逆伝播時の最初の入力値となる
-        return mean_squared_error(y, t)
+        #mse = 0.5 * np.sum((y-t)**2)
+        batch_size, C, M, N = y.shape
+        self.loss_value = mean_squared_error(y, t) / (batch_size*C*M*N)
+        print(self.loss_value)
+        return self.loss_value
         
     # 勾配計算
     def gradient(self, x, t):
         # 順伝播
-        loss = self.loss()
+        self.loss(x, t)
         
         # 逆伝播
         # 最後の層の逆伝播から実行するため層の順番を反転させる
         layers = list(self.layers.values())
         layers.reverse()
-        dout = x - t
-        for layer in layers.values():
+        y = self.predict(x)
+        dout = y - t
+        for layer in layers:
             dout = layer.backward(dout)
         
         grads = {}
@@ -97,9 +103,37 @@ class SRCNN:
         grads['b3'] = self.layers['Conv3'].db
         
         return grads
+        
+    def accuracy(self, x, t):
+        #y = self.predict(x)
+        sqrtMSE = np.sqrt(self.loss_value)
+        acc = 20*np.log10(255/sqrtMSE)
+        print(acc)
+        return acc
+        
+    """
+    def save_params(self, file_name="params.pkl"):
+        params = {}
+        for key, value in self.params.items():
+            params[key] = value
+        with open(file_name, "wb") as f:
+            pickle.dump(params, f)
+            
+    def load_params(self, file_name="params.pkl"):
+        with open(file_name, "rb") as f:
+            params = pickle.load(f)
+        for key, value in params.items():
+            self.params[key] = value
+        
+        # 各層のパラメーターに戻す
+        for i, key in enumerate(["Conv1", "Affine1", "Affine2"]):
+            self.layers[key].W = self.params["W" + str(i+1)]
+            self.layers[key].b = self.params["b" + str(i+1)]
+            
+    """
 
 if __name__ == '__main__':
-    im = cv2.imread('Train/t1.bmp') # BGR形式
+    im = cv2.imread('Train_HR/t1.bmp') # BGR形式
     cv2.imshow('t1.bmp',im[:,:,0])  # B
     cv2.waitKey(0)
     cv2.imshow('t1.bmp',im[:,:,1])  # G

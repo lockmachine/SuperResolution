@@ -42,7 +42,7 @@ def MakeLowResolutionImage(org_path='./Train_HR/', redu_path='./Train_LR/', redu
         break
 
 
-def SplitLowResolutionImage(input_path='./Train_LR/', output_path='./Train_LR_sub/', fsub_size=33):
+def SplitImage(input_path='./Train_LR/', output_path='./Train_LR_sub/', fsub_size=33):
     # オリジナルの訓練データの読み込み
     input_img_list = glob.glob(input_path + '*')
     
@@ -75,7 +75,11 @@ def SplitLowResolutionImage(input_path='./Train_LR/', output_path='./Train_LR_su
         hcrop = h - surplus_h
         
         # クロップ画像を生成する
-        crop_img = img[tcrop:-bcrop, lcrop:-rcrop]
+        #crop_img = img[tcrop:-bcrop, lcrop:-rcrop]
+        # ↑はダメ。
+        # ex) surplus_h = 0 の場合、tcrop = 0, bcrop = 0 となり、
+        #     img[0:-0, *:*]となるためデータが空になる
+        crop_img = img[tcrop:(tcrop+hcrop), lcrop:(lcrop+wcrop)]
         
         # np.split()のための分割数
         hcrop_num = hcrop // fsub_size
@@ -114,10 +118,10 @@ def SplitLowResolutionImage(input_path='./Train_LR/', output_path='./Train_LR_su
 
 if __name__ == '__main__':
     MakeLowResolutionImage()
-    # 正解画像の分割
-    SplitLowResolutionImage(input_path='./Train_LR/', output_path='./Train_LR_split/', fsub_size=33)
-    
     # 低解像画像の分割
-    SplitLowResolutionImage(input_path='./Train_HR/', output_path='./Train_HR_split/', fsub_size=33)
+    SplitImage(input_path='./Train_LR/', output_path='./Train_LR_split/', fsub_size=33)
+    
+    # 正解画像の分割
+    SplitImage(input_path='./Train_HR/', output_path='./Train_HR_split/', fsub_size=33)
     
     
