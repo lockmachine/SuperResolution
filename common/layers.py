@@ -92,37 +92,6 @@ class SoftmaxWithLoss:
         return dx
 
 
-class OutputWithLoss:
-    def __init__(self):
-        self.loss = None
-        self.y = None # softmaxの出力
-        self.t = None # 教師データ
-
-    def forward(self, x, t):
-        # 入力 x に対する推論結果 y から損失演算を行う
-        y = self.predict(x)
-        
-        # 最終出力結果と正解データの最小二乗誤差を算出
-        # 逆伝播時の最初の入力値となる
-        return mean_squared_error(y, t)
-        #self.t = t
-        #self.y = softmax(x)
-        #self.loss = cross_entropy_error(self.y, self.t)
-        
-        return self.loss
-
-    def backward(self, dout=1):
-        batch_size = self.t.shape[0]
-        if self.t.size == self.y.size: # 教師データがone-hot-vectorの場合
-            dx = (self.y - self.t) / batch_size
-        else:
-            dx = self.y.copy()
-            dx[np.arange(batch_size), self.t] -= 1
-            dx = dx / batch_size
-        
-        return dx
-
-
 class Dropout:
     """
     http://arxiv.org/abs/1207.0580
@@ -244,6 +213,10 @@ class Convolution:
 
     def forward(self, x):
         FN, C, FH, FW = self.W.shape
+        #print('W')
+        #print(self.W[0,0,0])
+        #print('b')
+        #print(self.b[:])
         N, C, H, W = x.shape
         out_h = 1 + int((H + 2*self.pad - FH) / self.stride)
         out_w = 1 + int((W + 2*self.pad - FW) / self.stride)

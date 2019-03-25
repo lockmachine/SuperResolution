@@ -102,14 +102,33 @@ for i in range(max_iter_num):
     batch_mask = np.random.choice(x_train_img_list.shape[0], batch_size)
     
     # バッチデータの取り出し
-    x_train_batch = x_train_img_list[batch_mask]
-    t_train_batch = t_train_img_list[batch_mask]
+    x_train_batch = x_train_img_list[batch_mask]/255    # (100, 3, 33, 33), <class 'numpy.float64'>
+    t_train_batch = t_train_img_list[batch_mask]/255    # (100, 3, 21, 21), <class 'numpy.float64'>
     
     # 勾配計算
     grad = network.gradient(x_train_batch, t_train_batch)
     
+    """
+    print('grad W1')
+    print(grad['W1'][0, 0, 0])
+    print('grad b1')
+    print(grad['b1'][0])
+    print('grad W2')
+    print(grad['W2'][0, 0, 0])
+    print('grad b2')
+    print(grad['b2'][0])
+    print('grad W3')
+    print(grad['W3'][0, 0, 0])
+    print('grad b3')
+    print(grad['b3'][0])
+    """
+    
     # パラメータの更新
     optimizer.update(network.params, grad)
+    
+    #print('W1')
+    #print(network.params['W1'][0, 0, 0])
+    
     
     # 損失関数計算
     loss = network.loss(x_train_batch, t_train_batch)
