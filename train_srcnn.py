@@ -79,8 +79,8 @@ t_train_img_list = t_train_img_list.transpose(0, 3, 1, 2)
 # パラメータの設定
 batch_size = 100
 iter_num = 0
-max_iter_num = 10000
-max_epoch_num = 20
+max_iter_num = 100000
+max_epoch_num = 50
 
 # 1エポックの訓練回数
 train_per_epoch = x_train_img_list.shape[0] // batch_size + 1
@@ -145,10 +145,26 @@ for i in range(max_iter_num):
         end = time.time()
         print('------{}/{} epochs(TotalProcTime:{})------'.format(epoch_num, max_epoch_num, end-start))
         print('train_loss:{}\ntrain_acc :{}'.format(loss, acc))
+        
+        param_file = './train_proc/param_'+str(epoch_num - 1)+'epochs.pkl'
+        with open(param_file, "wb") as f:
+            pickle.dump(network.params, f)
+        
+        loss_file = './train_proc/loss_'+str(epoch_num - 1)+'epochs.pkl'
+        with open(loss_file, "wb") as f:
+            pickle.dump(train_loss_list, f)
+        
+        acc_file = './train_proc/acc_'+str(epoch_num - 1)+'epochs.pkl'
+        with open(acc_file, "wb") as f:
+            pickle.dump(train_acc_list, f)
+            
         if epoch_num > max_epoch_num:
             break
 
-
-
+plt.plot(train_loss_list)
+plt.plot(train_acc_list)
+plt.xlabel('iter')
+plt.ylabel('loss & accuracy')
+plt.show()
 # パラメータの保存
 #network.save_params('params.pkl')

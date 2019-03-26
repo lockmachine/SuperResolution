@@ -113,8 +113,8 @@ class SRCNN:
         layers = list(self.layers.values())
         layers.reverse()
         batch_size = x.shape[0] # 100
-        height = x.shape[1] # 100
-        width = x.shape[2] # 100
+        height = x.shape[2] # 33
+        width = x.shape[3] # 33
         
         dout = (y - t) / (batch_size * height * width)
         
