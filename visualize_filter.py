@@ -21,23 +21,24 @@ def filter_show(filters, nx=8, margin=3, scale=10):
         ax.imshow(filters[i, 0], cmap=plt.cm.gray_r, interpolation="nearest")
     plt.show()
 
-network = SRCNN()
+if __name__ == '__main__':
+    network = SRCNN()
 
-# ネットワーク初期化後の重み
-param_file = './train_proc/param_0epochs.pkl'
-with open(param_file, "rb") as f:
-    params = pickle.load(f)
+    # ネットワーク初期化後の重み
+    param_file = './train_proc/param_0epochs.pkl'
+    with open(param_file, "rb") as f:
+        params = pickle.load(f)
 
-filter_show(params["W1"])
-filter_show(params["W2"])
-filter_show(params["W3"])
+    filter_show(params["W1"])
+    filter_show(params["W2"])
+    filter_show(params["W3"])
 
 
-# 学習後の重み
-param_file = './train_proc/param_50epochs.pkl'
-with open(param_file, "rb") as f:
-    params = pickle.load(f)
+    # 学習後の重み
+    param_file = './train_proc/param_50epochs.pkl'
+    with open(param_file, "rb") as f:
+        params = pickle.load(f)
 
-filter_show(params["W1"])
-filter_show(params["W2"])
-filter_show(params["W3"])
+    filter_show(params["W1"])
+    filter_show(params["W2"])
+    filter_show(params["W3"])

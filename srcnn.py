@@ -18,37 +18,54 @@ class SRCNN:
     conv3_param:出力層のフィルタパラメータ
     """
     def __init__(self,  input_dim=(3, 33, 33),
-                        conv1_param={'filter_num':64, 'filter_size':9, 'padding':0, 'stride':1, 'learning_rate':1e-4},
+                        fUseParam=False,
+						W1=None,W2=None,W3=None,b1=None,b2=None,b3=None,
+						conv1_param={'filter_num':64, 'filter_size':9, 'padding':0, 'stride':1, 'learning_rate':1e-4},
                         conv2_param={'filter_num':32, 'filter_size':1, 'padding':0, 'stride':1, 'learning_rate':1e-4},
                         conv3_param={'filter_num':32, 'filter_size':5, 'padding':0, 'stride':1, 'learning_rate':1e-5},
                         weight_init_std=1e-3):
         # フィルター情報のコピー
         filter_num1 = conv1_param['filter_num']
         
-        
         # パラメータの初期化
         self.params = {}
-        # (64, 3, 9, 9)
-        self.params['W1'] = weight_init_std * np.random.randn(conv1_param['filter_num']
-                                                            , input_dim[0]              # 3
-                                                            , conv1_param['filter_size']
-                                                            , conv1_param['filter_size'])
-        # (64,)
-        self.params['b1'] = np.zeros(conv1_param['filter_num'])
-        # (32, 64, 1, 1)
-        self.params['W2'] = weight_init_std * np.random.randn(conv2_param['filter_num']
-                                                            , conv1_param['filter_num'] # 64
-                                                            , conv2_param['filter_size']
-                                                            , conv2_param['filter_size'])
-        # (32,)
-        self.params['b2'] = np.zeros(conv2_param['filter_num'])
-        # (3, 32, 5, 5)
-        self.params['W3'] = weight_init_std * np.random.randn(input_dim[0]
-                                                            , conv2_param['filter_num'] # 32
-                                                            , conv3_param['filter_size']
-                                                            , conv3_param['filter_size'])
-        # (3,)
-        self.params['b3'] = np.zeros(input_dim[0])
+		
+        if fUseParam == False:
+            # (64, 3, 9, 9)
+            self.params['W1'] = weight_init_std * np.random.randn(conv1_param['filter_num']
+                                                                , input_dim[0]              # 3
+                                                                , conv1_param['filter_size']
+                                                                , conv1_param['filter_size'])
+            # (64,)
+            self.params['b1'] = np.zeros(conv1_param['filter_num'])
+            # (32, 64, 1, 1)
+            self.params['W2'] = weight_init_std * np.random.randn(conv2_param['filter_num']
+                                                                , conv1_param['filter_num'] # 64
+                                                                , conv2_param['filter_size']
+                                                                , conv2_param['filter_size'])
+            # (32,)
+            self.params['b2'] = np.zeros(conv2_param['filter_num'])
+            # (3, 32, 5, 5)
+            self.params['W3'] = weight_init_std * np.random.randn(input_dim[0]
+                                                                , conv2_param['filter_num'] # 32
+                                                                , conv3_param['filter_size']
+                                                                , conv3_param['filter_size'])
+            # (3,)
+            self.params['b3'] = np.zeros(input_dim[0])
+        
+        else :
+            # (64, 3, 9, 9)
+            self.params['W1'] = W1
+            # (64,)
+            self.params['b1'] = b1
+            # (32, 64, 1, 1)
+            self.params['W2'] = W2
+            # (32,)
+            self.params['b2'] = b2
+            # (3, 32, 5, 5)
+            self.params['W3'] = W3
+            # (3,)
+            self.params['b3'] = b3
         
         """
         # for Debug

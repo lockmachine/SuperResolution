@@ -39,7 +39,7 @@ def MakeLowResolutionImage(org_path='./Train_HR/', redu_path='./Train_LR/', redu
         # 低解像画像の保存
         cv2.imwrite(output_fpath ,img)
         
-        break
+        
 
 
 def SplitImage(input_path='./Train_LR/', output_path='./Train_LR_sub/', fsub_size=33):
@@ -117,11 +117,16 @@ def SplitImage(input_path='./Train_LR/', output_path='./Train_LR_sub/', fsub_siz
             
 
 if __name__ == '__main__':
-    MakeLowResolutionImage()
+    
+    MakeLowResolutionImage(org_path='./Test/Set5/', redu_path='./Test/Set5_LR/', redu_rate=2)
+    
+    MakeLowResolutionImage(org_path='./Test/Set14/', redu_path='./Test/Set14_LR/', redu_rate=2)
+    
+    #MakeLowResolutionImage()
     # 低解像画像の分割
-    SplitImage(input_path='./Train_LR/', output_path='./Train_LR_split/', fsub_size=33)
+    #SplitImage(input_path='./Train_LR/', output_path='./Train_LR_split/', fsub_size=33)
     
     # 正解画像の分割
-    SplitImage(input_path='./Train_HR/', output_path='./Train_HR_split/', fsub_size=33)
+    #SplitImage(input_path='./Train_HR/', output_path='./Train_HR_split/', fsub_size=33)
     
     
