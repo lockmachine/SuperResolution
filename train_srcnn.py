@@ -150,11 +150,11 @@ for i in range(max_iter_num):
         with open(param_file, "wb") as f:
             pickle.dump(network.params, f)
         
-        loss_file = './train_proc/loss_'+str(epoch_num - 1)+'epochs.pkl'
+        loss_file = './train_proc/loss_list.pkl'
         with open(loss_file, "wb") as f:
             pickle.dump(train_loss_list, f)
         
-        acc_file = './train_proc/acc_'+str(epoch_num - 1)+'epochs.pkl'
+        acc_file = './train_proc/acc_list.pkl'
         with open(acc_file, "wb") as f:
             pickle.dump(train_acc_list, f)
             

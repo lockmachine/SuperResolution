@@ -156,7 +156,7 @@ class SRCNN:
     def accuracy(self, x, t):
         #y = self.predict(x)
         sqrtMSE = np.sqrt(self.loss_value)
-        acc = 20*np.log10(255/sqrtMSE)
+        acc = 20*np.log10(1/sqrtMSE)
         print(acc)
         return acc
         
