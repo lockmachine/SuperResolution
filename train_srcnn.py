@@ -146,7 +146,7 @@ for i in range(max_iter_num):
         print('------{}/{} epochs(TotalProcTime:{})------'.format(epoch_num, max_epoch_num, end-start))
         print('train_loss:{}\ntrain_acc :{}'.format(loss, acc))
         
-        param_file = './train_proc/param_'+str(epoch_num - 1)+'epochs.pkl'
+        param_file = './train_proc/param_'+str(epoch_num)+'epochs.pkl'
         with open(param_file, "wb") as f:
             pickle.dump(network.params, f)
         

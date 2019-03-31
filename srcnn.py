@@ -157,7 +157,7 @@ class SRCNN:
         #y = self.predict(x)
         sqrtMSE = np.sqrt(self.loss_value)
         acc = 20*np.log10(1/sqrtMSE)
-        print(acc)
+        #print(acc)
         return acc
         
     """

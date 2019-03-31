@@ -35,7 +35,7 @@ if __name__ == '__main__':
 
 
     # 学習後の重み
-    param_file = './train_proc/param_50epochs.pkl'
+    param_file = './train_proc/param_200epochs.pkl'
     with open(param_file, "rb") as f:
         params = pickle.load(f)
 
